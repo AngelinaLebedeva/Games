@@ -1,0 +1,72 @@
+h1 {
+	font-size: 60px;
+	opacity: 0.7;
+	margin: 15px auto;
+}
+
+p {
+	font-size: 18px;
+	font-family: "Clear Sans", Helvetica, serif;
+}
+
+input {
+	font-size: 20px;
+	border: 2px solid black;
+}
+
+.block_container {
+	width: 1000px;
+	height: 1000px;
+	margin: 10px auto;
+	background-color: #bfbfbf;
+	opacity: 0.9;
+	display: flex;
+	flex-wrap: wrap;
+	box-sizing: border-box;
+}
+
+.block_container div {
+	width: 100px;
+	height: 100px;
+	border: 0.5px solid black;
+	flex: 0 0 10%;
+    transition: background-color 1s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+	box-sizing: border-box;
+}
+
+.info {
+	display: flex;
+	justify-content: space-between;
+	font-weight: 600;
+	font-size: 24px;
+	width: 1000px;
+	margin: 15px auto;
+}
+
+.red {
+	background-color: red;
+}
+
+.blue {
+	background-color: blue;
+}
+
+.green {
+	background-color: green;
+}
+
+.yellow {
+	background-color: yellow;
+}
+
+.orange {
+	background-color: orange;
+}
+
+.disabled {
+	background-color: #bfbfbf;
+}
+
+div.picked {
+	border: 5px solid black;
+}

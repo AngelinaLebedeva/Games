@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" sizes="16x16" href="../images/swan.jpg" />
+    <title>Игры</title>
+    <link href="../main.css" rel="stylesheet" />
+    <link href="./2048.css" rel="stylesheet" />
+    <link href="./2048-media.css" rel="stylesheet" />
+    <script src="./2048.js" defer></script>
+  </head>
+  <body>
+    <header>
+      <nav>
+        <div class="nav_container">
+          <div class="logo">
+            <a href="index.html">
+              <img src="../images/gamelogo.png" alt="Logo" width="100" />
+            </a>
+          </div>
+          <div class="menu">
+            <ul>
+              <li>
+                <a class="link" href="../index.html">Главная</a>
+              </li>
+              <li>
+                <a class="link" href="../squares/squares.html">Квадраты</a>
+              </li>
+              <li>
+                <a class="link active-link" href="./2048.html">2048</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </header>
+    <h1>2048</h1>
+    <hr />
+    <div class="info">
+      <div>Счет: <span id="score">0</span></div>
+      <div>Лучший счет:<span id="best-score">0</span></div>
+    </div>
+    <div id="board"></div>
+  </body>
+</html>
