@@ -1,8 +1,31 @@
+.container {
+    display: flex;
+    flex-direction: row;
+    margin: 0 auto;
+    width: 600px;
+}
+
+#info {
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    width: 300px;
+    margin: 0 auto;
+    padding: 10px;
+}
+
 .score {
     font-size: 30px;
 }
 
 #button {
     size: 20px;
-    font-size: 22px;  
+    font-size: 22px;
+    margin-top: auto; 
+    margin-bottom: 5px;
+}
+
+#canvasNext {
+    align-self: center;
+    margin-top: 20px;
 }
