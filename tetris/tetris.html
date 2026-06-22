@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" sizes="16x16" href="../images/swan.jpg" />
+    <title>Игры</title>
+    <link href="../main.css" rel="stylesheet" />
+    <link href="./tetris.css" rel="stylesheet" />
+    <script src="./tetris.js" defer></script>
+  </head>
+  <body>
+    <header>
+      <nav>
+        <div class="nav_container">
+          <div class="logo">
+            <a href="../index.html">
+              <img src="../images/gamelogo.png" alt="Logo" width="100" />
+            </a>
+          </div>
+          <div class="menu">
+            <ul>
+              <li>
+                <a class="link" href="../index.html">Главная</a>
+              </li>
+              <li>
+                <a class="link" href="../squares/squares.html">Квадраты</a>
+              </li>
+              <li>
+                <a class="link" href="../2048/2048.html">2048</a>
+              </li>
+              <li>
+                <a class="link active-link" href="./tetris.html">Тетрис</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </header>
+    <h1>Тетрис</h1>
+    <hr />
+    <div class="info">
+      <div class="score">Счет: <span id="score">0</span></div>
+      <div class="score">Лучший счет:<span id="best-score">0</span></div>
+    </div>
+    <div id="canvas"></div>
+  </body>
+</html>
