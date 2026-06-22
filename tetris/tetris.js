@@ -4,9 +4,10 @@ const SQUARESIZE = 30;
 
 let score = 0;
 let bestScore = localStorage.getItem("best-score-tetris") || 0;
-let context = 0;
+let context = 0,
+  contextNext = 0;
 
-let field;
+let field, fieldNext;
 let figure;
 let state;
 let pauseCount = 60;
@@ -57,9 +58,10 @@ const figuresTemplate = [
 ];
 
 class Field {
-  constructor(wight, height) {
+  constructor(wight, height, context) {
     this.width = wight;
     this.height = height;
+    this.context = context;
     this.blocks = Array(height)
       .fill()
       .map(() => Array(wight).fill(0));
@@ -120,22 +122,31 @@ class Field {
     return count;
   }
 
-  draw() {
+  draw(needBoarders = true) {
     for (let i = 0; i < this.height; i++) {
       for (let j = 0; j < this.width; j++) {
-        drawBlock(i, j, getColor(this.blocks[i][j]));
+        drawBlock(
+          i,
+          j,
+          getColor(this.blocks[i][j]),
+          this.context,
+          needBoarders,
+        );
       }
     }
   }
 }
 
 class Figure {
-  constructor(number, x, y) {
+  constructor(number, x, y, field) {
     this.figure = figuresTemplate[number];
     this.size = this.figure.length;
+    this.number = number;
     this.x = x;
     this.y = y;
     this.block = figuresTemplate[number];
+    this.field = field;
+    this.nextFigure = 0;
   }
 
   moveDown() {
@@ -154,7 +165,7 @@ class Figure {
     this.x++;
   }
 
-  rotate(field) {
+  rotate() {
     const size = this.size;
     const rotated = Array(size)
       .fill()
@@ -170,18 +181,20 @@ class Figure {
 
     this.block = rotated;
 
-    if (field.collision(this)) {
+    if (this.field.collision(this)) {
       this.block = oldBlock;
       return false;
     }
     return true;
   }
 
-  createNew(field) {
-    figure = new Figure(
+  createNew() {
+    figure = new Figure(figure.nextFigure.number, 3, 0, field);
+    figure.nextFigure = new Figure(
       Math.floor(Math.random() * figuresTemplate.length),
-      3,
       0,
+      0,
+      fieldNext,
     );
   }
 
@@ -189,7 +202,12 @@ class Figure {
     for (let i = 0; i < this.size; i++) {
       for (let j = 0; j < this.size; j++) {
         if (this.block[i][j] != 0)
-          drawBlock(i + this.y, j + this.x, getColor(this.block[i][j]));
+          drawBlock(
+            i + this.y,
+            j + this.x,
+            getColor(this.block[i][j]),
+            this.field.context,
+          );
       }
     }
   }
@@ -202,20 +220,41 @@ function createCanvas() {
   context = canvas.getContext("2d");
   let container = document.getElementById("canvas");
 
-  document.body.insertBefore(canvas, container);
+  container.before(canvas);
 
   button = document.createElement("input");
   button.onclick = () => pressButtonHandler();
   button.id = "button";
   button.setAttribute("type", "button");
   button.setAttribute("value", "Начать");
-  container.after(button);
+  container = document.getElementById("info");
+
+  let canvasNext = document.createElement("canvas");
+  canvasNext.id = "canvasNext";
+  canvasNext.width = 4 * SQUARESIZE;
+  canvasNext.height = 4 * SQUARESIZE;
+  contextNext = canvasNext.getContext("2d");
+  container.append(canvasNext);
+
+  container.append(button);
   button = document.querySelector("#button");
 }
 
 function startGame() {
-  field = new Field(COLUMNSCOUNT, ROWSCOUNT);
-  figure = new Figure(Math.floor(Math.random() * figuresTemplate.length), 3, 0);
+  field = new Field(COLUMNSCOUNT, ROWSCOUNT, context);
+  fieldNext = new Field(4, 4, contextNext);
+  figure = new Figure(
+    Math.floor(Math.random() * figuresTemplate.length),
+    3,
+    0,
+    field,
+  );
+  figure.nextFigure = new Figure(
+    Math.floor(Math.random() * figuresTemplate.length),
+    0,
+    0,
+    fieldNext,
+  );
 
   state = 1;
   score = 0;
@@ -224,6 +263,7 @@ function startGame() {
   document.getElementById("score").innerText = score;
 
   field.draw();
+  fieldNext.draw(false);
   button.setAttribute("value", "Начать");
 }
 
@@ -251,7 +291,7 @@ function updateGame() {
         localStorage.setItem("best-score-tetris", bestScore);
         document.getElementById("best-score").innerText = bestScore;
       }
-      figure.createNew(field);
+      figure.createNew();
       figure.moveDown();
       if (field.collision(figure)) {
         figure.moveUp();
@@ -265,17 +305,21 @@ function updateGame() {
 
   field.draw();
   figure.draw();
+  fieldNext.draw(false);
+  figure.nextFigure.draw();
 
   pauseTicks--;
 
   animation = requestAnimationFrame(updateGame);
 }
 
-function drawBlock(y, x, color) {
+function drawBlock(y, x, color, context, needBoarders = true) {
   context.fillStyle = color;
   context.fillRect(SQUARESIZE * x, SQUARESIZE * y, SQUARESIZE, SQUARESIZE);
-  context.strokeStyle = "black";
-  context.strokeRect(SQUARESIZE * x, SQUARESIZE * y, SQUARESIZE, SQUARESIZE);
+  if (needBoarders) {
+    context.strokeStyle = "black";
+    context.strokeRect(SQUARESIZE * x, SQUARESIZE * y, SQUARESIZE, SQUARESIZE);
+  }
 }
 
 createCanvas();
@@ -307,7 +351,6 @@ function getColor(square) {
 function drawText(font, color, text, x, y) {
   context.font = font;
   context.fillStyle = color;
-  console.log(text);
   context.fillText(text, x, y);
 }
 
@@ -327,7 +370,7 @@ function keyUpHandler(e) {
       figure.moveLeft();
     }
   } else if (e.code == "ArrowUp") {
-    figure.rotate(field);
+    figure.rotate();
   } else if (e.code == "ArrowDown") {
     figure.moveDown();
     if (field.collision(figure)) {
